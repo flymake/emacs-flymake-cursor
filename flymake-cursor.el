@@ -51,6 +51,8 @@
 ;; You can, of course, put that in an eval-after-load clause.
 ;;
 
+(require 'flymake)
+
 (defcustom flyc-error-display-delay 0.9
   "Delay in seconds to wait before displaying errors for the current line."
   :group 'flymake-cursor
