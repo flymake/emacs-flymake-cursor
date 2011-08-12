@@ -78,10 +78,15 @@ message to display, so there is one ;)"
 (defun flyc/show-stored-error-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
-  (if flyc--e-at-point
-      (progn
-        (message "%s" (flyc/maybe-fixup-message flyc--e-at-point))
-        (setq flyc--e-display-timer nil))))
+  (when flyc--e-at-point
+    (setq flyc--e-display-timer nil)
+    ;;  Don't trash the minibuffer while they're editing in there.
+    (if (> (minibuffer-depth) 0)
+      (flyc/show-fly-error-at-point-pretty-soon)
+      (message "%s" (flyc/maybe-fixup-message flyc--e-at-point))
+      )
+    )
+  )
 
 
 (defun flyc/-get-error-at-point ()
@@ -126,8 +131,8 @@ second, does the flymake error message (if any) get displayed.
 
   (let ((error-at-point (flyc/-get-error-at-point)))
     (if error-at-point
-        (setq flyc--e-at-point error-at-point
-              flyc--e-display-timer
+      (setq flyc--e-at-point error-at-point
+            flyc--e-display-timer
               (run-at-time (concat (number-to-string flyc-error-display-delay) " sec") nil 'flyc/show-stored-error-now))
       (setq flyc--e-at-point nil
             flyc--e-display-timer nil))))
