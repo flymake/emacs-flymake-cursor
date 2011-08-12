@@ -51,6 +51,10 @@
 ;; You can, of course, put that in an eval-after-load clause.
 ;;
 
+(defcustom flyc-error-display-delay 0.9
+  "Delay in seconds to wait before displaying errors for the current line."
+  :group 'flymake-cursor
+  :type 'number)
 
 (defvar flyc--e-at-point nil
   "Error at point, after last command")
@@ -122,7 +126,7 @@ second, does the flymake error message (if any) get displayed.
     (if error-at-point
         (setq flyc--e-at-point error-at-point
               flyc--e-display-timer
-              (run-at-time "0.9 sec" nil 'flyc/show-stored-error-now))
+              (run-at-time (concat (number-to-string flyc-error-display-delay) " sec") nil 'flyc/show-stored-error-now))
       (setq flyc--e-at-point nil
             flyc--e-display-timer nil))))
 
