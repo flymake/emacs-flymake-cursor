@@ -97,8 +97,7 @@ message to display, so there is one ;)"
     (setq flymake-cursor-error-display-timer nil)
     ;;  Don't trash the minibuffer while they're being asked a question.
     (if (or (active-minibuffer-window)
-            (and (current-message)
-                 (string-match "(y or n)" (current-message))))
+            cursor-in-echo-area)
       (flymake-cursor-show-errors-at-point-pretty-soon)
       (message "%s" (mapconcat 'flymake-cursor-maybe-fixup-message flymake-cursor-errors-at-point "\n")))))
 
