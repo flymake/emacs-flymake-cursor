@@ -58,11 +58,27 @@
   :group 'flymake-cursor
   :type 'number)
 
-(defvar flymake-cursor-error-at-point nil
-  "Error at point, after last command")
+(defcustom flymake-cursor-number-of-errors-to-display 1
+  "Number of flymake errors to display if there are more than one.
+
+If set to nil, all errors for the line will be displayed."
+  :group 'flymake-cursor
+  :type '(choice integer (const nil)))
+
+(defvar flymake-cursor-errors-at-point nil
+  "Errors at point, after last command")
 
 (defvar flymake-cursor-error-display-timer nil
   "A timer; when it fires, it displays the stored error message.")
+
+(defun flymake-cursor-get-errors-at-point ()
+  "Gets the first `flymake-cursor-number-of-errors-to-display` flymake errors on the line at point."
+  (let ((line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info (line-number-at-pos)))))
+    (when (and flymake-cursor-number-of-errors-to-display
+               (> (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
+      (setq line-err-info-list (copy-sequence line-err-info-list))
+      (setcdr (nthcdr (- flymake-cursor-number-of-errors-to-display 1) line-err-info-list) nil))
+    line-err-info-list))
 
 (defun flymake-cursor-maybe-fixup-message (error)
   "pyflake is flakey if it has compile problems, this adjusts the
@@ -74,48 +90,30 @@ message to display, so there is one ;)"
         (t ;; could not compile error
          (format "compile error, problem on line %s" (flymake-ler-line error)))))
 
-
-(defun flymake-cursor-show-stored-error-now ()
+(defun flymake-cursor-show-stored-errors-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
-  (when flymake-cursor-error-at-point
+  (when flymake-cursor-errors-at-point
     (setq flymake-cursor-error-display-timer nil)
     ;;  Don't trash the minibuffer while they're being asked a question.
     (if (or (active-minibuffer-window)
             (and (current-message)
                  (string-match "(y or n)" (current-message))))
-      (flymake-cursor-show-fly-error-at-point-pretty-soon)
-      (message "%s" (flymake-cursor-maybe-fixup-message flymake-cursor-error-at-point))
-      )
-    )
-  )
+      (flymake-cursor-show-errors-at-point-pretty-soon)
+      (message "%s" (mapconcat 'flymake-cursor-maybe-fixup-message flymake-cursor-errors-at-point "\n")))))
 
-
-(defun flymake-cursor-get-error-at-point ()
-  "Gets the first flymake error on the line at point."
-  (let ((line-no (line-number-at-pos))
-        flymake-cursor-error)
-    (dolist (elem flymake-err-info)
-      (if (eq (car elem) line-no)
-          (setq flymake-cursor-error (car (second elem)))))
-    flymake-cursor-error))
-
-
-(defun flymake-cursor-show-fly-error-at-point-now ()
+(defun flymake-cursor-show-errors-at-point-now ()
   "If the cursor is sitting on a flymake error, display
 the error message in the minibuffer."
   (interactive)
   (when flymake-cursor-error-display-timer
     (cancel-timer flymake-cursor-error-display-timer)
     (setq flymake-cursor-error-display-timer nil))
-  (let ((error-at-point (flymake-cursor-get-error-at-point)))
-    (when error-at-point
-      (setq flymake-cursor-error-at-point error-at-point)
-      (flymake-cursor-show-stored-error-now))))
+  (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
+  (when flymake-cursor-errors-at-point
+    (flymake-cursor-show-stored-errors-now)))
 
-
-
-(defun flymake-cursor-show-fly-error-at-point-pretty-soon ()
+(defun flymake-cursor-show-errors-at-point-pretty-soon ()
   "If the cursor is sitting on a flymake error, grab the error,
 and set a timer for \"pretty soon\". When the timer fires, the error
 message will be displayed in the minibuffer.
@@ -129,25 +127,22 @@ quickly. Only when the user pauses on a line for more than a
 second, does the flymake error message (if any) get displayed."
   (when flymake-cursor-error-display-timer
     (cancel-timer flymake-cursor-error-display-timer))
-
-  (setq flymake-cursor-error-at-point (flymake-cursor-get-error-at-point))
-  (if flymake-cursor-error-at-point
+  (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
+  (if flymake-cursor-errors-at-point
     (setq flymake-cursor-error-display-timer
-      (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-error-now))
+      (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-errors-now))
     (setq flymake-cursor-error-display-timer nil)))
-
-
 
 (eval-after-load "flymake"
   '(progn
 
      (defadvice flymake-goto-next-error (after flymake-cursor-display-message-1 activate compile)
        "Display the error in the mini-buffer rather than having to mouse over it"
-       (flymake-cursor-show-fly-error-at-point-now))
+       (flymake-cursor-show-errors-at-point-now))
 
      (defadvice flymake-goto-prev-error (after flymake-cursor-display-message-2 activate compile)
        "Display the error in the mini-buffer rather than having to mouse over it"
-       (flymake-cursor-show-fly-error-at-point-now))
+       (flymake-cursor-show-errors-at-point-now))
 
      (defadvice flymake-mode (before flymake-cursor-post-command-fn activate compile)
        "Add functionality to the post command hook so that if the
@@ -155,7 +150,7 @@ cursor is sitting on a flymake error the error information is
 displayed in the minibuffer (rather than having to mouse over
 it)"
        (set (make-local-variable 'post-command-hook)
-            (cons 'flymake-cursor-show-fly-error-at-point-pretty-soon post-command-hook)))))
+            (cons 'flymake-cursor-show-errors-at-point-pretty-soon post-command-hook)))))
 
 
 (provide 'flymake-cursor)

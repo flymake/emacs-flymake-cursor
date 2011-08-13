@@ -9,8 +9,9 @@ The project is a fork of http://www.emacswiki.org/emacs/flymake-cursor.el
 It adds the following features:
 
  * Customizable delay before the error appears in the minibuffer.
- * Requires flymake, ensuring a clean byte-compile.
+ * Customizable number of errors to display in the minibuffer.
  * Does not overwrite the minibuffer if it's currently in use for user input.
+ * Requires flymake, ensuring a clean byte-compile.
 
 INSTALLATION
 ------------
@@ -31,6 +32,8 @@ following custom variables directly:
 
  * `flymake-cursor-error-display-delay` sets the delay before an error is
    displayed in the minibuffer.
+ * `flymake-cursor-number-of-errors-to-display` sets how many errors to
+   display in the minibuffer at once.
 
 KNOWN ISSUES & BUGS
 -------------------
