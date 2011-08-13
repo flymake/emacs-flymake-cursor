@@ -128,15 +128,13 @@ updated 10,000 times as a user scrolls through a buffer
 quickly. Only when the user pauses on a line for more than a
 second, does the flymake error message (if any) get displayed."
   (when flymake-cursor-error-display-timer
-      (cancel-timer flymake-cursor-error-display-timer))
+    (cancel-timer flymake-cursor-error-display-timer))
 
-  (let ((error-at-point (flymake-cursor-get-error-at-point)))
-    (if error-at-point
-      (setq flymake-cursor-error-at-point error-at-point
-            flymake-cursor-error-display-timer
-              (run-at-time (concat (number-to-string flymake-cursor-error-display-delay) " sec") nil 'flymake-cursor-show-stored-error-now))
-      (setq flymake-cursor-error-at-point nil
-            flymake-cursor-error-display-timer nil))))
+  (setq flymake-cursor-error-at-point (flymake-cursor-get-error-at-point))
+  (if flymake-cursor-error-at-point
+    (setq flymake-cursor-error-display-timer
+      (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-error-now))
+    (setq flymake-cursor-error-display-timer nil)))
 
 
 
