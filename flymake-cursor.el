@@ -64,15 +64,15 @@
 (defvar flymake-cursor-error-display-timer nil
   "A timer; when it fires, it displays the stored error message.")
 
-(defun flymake-cursor-maybe-fixup-message (errore)
+(defun flymake-cursor-maybe-fixup-message (error)
   "pyflake is flakey if it has compile problems, this adjusts the
 message to display, so there is one ;)"
   (cond ((not (or (eq major-mode 'Python) (eq major-mode 'python-mode) t)))
-        ((null (flymake-ler-file errore))
+        ((null (flymake-ler-file error))
          ;; normal message do your thing
-         (flymake-ler-text errore))
+         (flymake-ler-text error))
         (t ;; could not compile error
-         (format "compile error, problem on line %s" (flymake-ler-line errore)))))
+         (format "compile error, problem on line %s" (flymake-ler-line error)))))
 
 
 (defun flymake-cursor-show-stored-error-now ()
