@@ -4,9 +4,7 @@ flymake-cursor.el
 This project is a plugin for Emacs to work in conjunction with flymake.el
 it displays any flymake error for the current line on the minibuffer.
 
-The project is a fork of that found at:
-
-    http://www.emacswiki.org/emacs/flymake-cursor.el
+The project is a fork of http://www.emacswiki.org/emacs/flymake-cursor.el
 
 It adds the following features:
 
@@ -31,7 +29,7 @@ You can customize the behaviour of `flymake-cursor.el` with the
 `flymake-cursor` group in customize mode, or you can edit the
 following custom variables directly:
 
- * `flyc-error-display-delay` sets the delay before an error is
+ * `flymake-cursor-error-display-delay` sets the delay before an error is
    displayed in the minibuffer.
 
 KNOWN ISSUES & BUGS
