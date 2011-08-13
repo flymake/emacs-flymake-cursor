@@ -103,17 +103,15 @@ message to display, so there is one ;)"
 
 (defun flymake-cursor-show-fly-error-at-point-now ()
   "If the cursor is sitting on a flymake error, display
-the error message in the  minibuffer."
+the error message in the minibuffer."
   (interactive)
-  (if flymake-cursor-error-display-timer
-      (progn
-        (cancel-timer flymake-cursor-error-display-timer)
-        (setq flymake-cursor-error-display-timer nil)))
+  (when flymake-cursor-error-display-timer
+    (cancel-timer flymake-cursor-error-display-timer)
+    (setq flymake-cursor-error-display-timer nil))
   (let ((error-at-point (flymake-cursor-get-error-at-point)))
-    (if error-at-point
-        (progn
-          (setq flymake-cursor-error-at-point error-at-point)
-          (flymake-cursor-show-stored-error-now)))))
+    (when error-at-point
+      (setq flymake-cursor-error-at-point error-at-point)
+      (flymake-cursor-show-stored-error-now))))
 
 
 
@@ -129,7 +127,7 @@ This allows a post-command-hook to NOT cause the minibuffer to be
 updated 10,000 times as a user scrolls through a buffer
 quickly. Only when the user pauses on a line for more than a
 second, does the flymake error message (if any) get displayed."
-  (if flymake-cursor-error-display-timer
+  (when flymake-cursor-error-display-timer
       (cancel-timer flymake-cursor-error-display-timer))
 
   (let ((error-at-point (flymake-cursor-get-error-at-point)))
