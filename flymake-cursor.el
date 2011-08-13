@@ -80,8 +80,10 @@ message to display, so there is one ;)"
   (interactive)
   (when flymake-cursor-error-at-point
     (setq flymake-cursor-error-display-timer nil)
-    ;;  Don't trash the minibuffer while they're editing in there.
-    (if (> (minibuffer-depth) 0)
+    ;;  Don't trash the minibuffer while they're being asked a question.
+    (if (or (active-minibuffer-window)
+            (and (current-message)
+                 (string-match "(y or n)" (current-message))))
       (flymake-cursor-show-fly-error-at-point-pretty-soon)
       (message "%s" (flymake-cursor-maybe-fixup-message flymake-cursor-error-at-point))
       )
