@@ -143,11 +143,13 @@ second, does the flymake error message (if any) get displayed."
        "Display the error in the mini-buffer rather than having to mouse over it"
        (flymake-cursor-show-errors-at-point-now))
 
-     (defadvice flymake-mode (before flymake-cursor-post-command-fn activate compile)
+     (defadvice flymake-mode (after flymake-cursor-post-command-fn activate compile)
        "Add functionality to the post command hook so that if the
 cursor is sitting on a flymake error the error information is
 displayed in the minibuffer (rather than having to mouse over
 it)"
-       (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t))))
+       (if flymake-mode
+         (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t)
+         (remove-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon t)))))
 
 (provide 'flymake-cursor)
