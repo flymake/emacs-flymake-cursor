@@ -36,6 +36,8 @@ following custom variables directly:
    displayed in the minibuffer.
  * `flymake-cursor-number-of-errors-to-display` sets how many errors to
    display in the minibuffer at once.
+ * `flymake-cursor-auto-enable` sets whether flymake-cursor should
+   automatically enable itself whenever flymake is enabled.
 
 KNOWN ISSUES & BUGS
 -------------------

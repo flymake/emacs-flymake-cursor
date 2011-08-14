@@ -65,6 +65,19 @@ If set to nil, all errors for the line will be displayed."
   :group 'flymake-cursor
   :type '(choice integer (const nil)))
 
+(defcustom flymake-cursor-auto-enable t
+  "Whether flymake-cursor should automatically enable itself whenever
+flymake is enabled.
+
+If set to t, flymake-cursor will turn on whenever flymake does.
+If set to nil, flymake-cursor will need to be manually enabled.
+
+Regardless of this setting, flymake-cursor will always disable
+itself automatically when flymake is disabled, to prevent
+errors."
+  :group 'flymake-cursor
+  :type 'boolean)
+
 (defvar flymake-cursor-errors-at-point nil
   "Errors at point, after last command")
 
@@ -153,6 +166,13 @@ second, does the flymake error message (if any) get displayed."
       (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-errors-now))
     (setq flymake-cursor-error-display-timer nil)))
 
+(defun flymake-cursor-follow-flymake-mode ()
+  "Hook function to make `flymake-cursor-mode` follow the on/off
+status of `flymake-mode'."
+  (if flymake-mode
+    (when flymake-cursor-auto-enable (flymake-cursor-mode 1))
+    (flymake-cursor-mode 0)))
+
 (eval-after-load "flymake"
   '(progn
 
@@ -164,13 +184,6 @@ second, does the flymake error message (if any) get displayed."
        "Display the error in the mini-buffer rather than having to mouse over it"
        (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
 
-     (add-hook 'flymake-mode-hook '(lambda ()
-       "Add functionality to the post command hook so that if the
-cursor is sitting on a flymake error the error information is
-displayed in the minibuffer (rather than having to mouse over
-it)"
-       (if flymake-mode
-         (flymake-cursor-mode 1)
-         (flymake-cursor-mode 0))))))
+     (add-hook 'flymake-mode-hook 'flymake-cursor-follow-flymake-mode)))
 
 (provide 'flymake-cursor)
