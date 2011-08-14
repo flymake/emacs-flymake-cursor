@@ -71,6 +71,26 @@ If set to nil, all errors for the line will be displayed."
 (defvar flymake-cursor-error-display-timer nil
   "A timer; when it fires, it displays the stored error message.")
 
+;;;###autoload
+(define-minor-mode flymake-cursor-mode
+  "Minor mode to show `flymake-mode' errors for the current line in the
+message area.
+When called interactively, toggles the minor mode.
+With arg, turn Flymake Cursor mode on if and only if arg is positive.
+
+Usually `flymake-cursor-mode' is enabled and disabled automatically with
+`flymake-mode' for the current buffer and you will not need to toggle
+the mode directly."
+  :group 'flymake-cursor
+  (cond
+
+    ;; Turning the mode ON.
+    (flymake-cursor-mode
+      (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t))
+    ;; Turning the mode OFF.
+    (t
+      (remove-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon t))))
+
 (defun flymake-cursor-get-errors-at-point ()
   "Gets the first `flymake-cursor-number-of-errors-to-display` flymake errors on the line at point."
   (let ((line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info (line-number-at-pos)))))
@@ -93,7 +113,8 @@ message to display, so there is one ;)"
 (defun flymake-cursor-show-stored-errors-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
-  (when flymake-cursor-errors-at-point
+  (when (and flymake-cursor-mode
+             flymake-cursor-errors-at-point)
     (setq flymake-cursor-error-display-timer nil)
     ;;  Don't trash the minibuffer while they're being asked a question.
     (if (or (active-minibuffer-window)
@@ -137,11 +158,11 @@ second, does the flymake error message (if any) get displayed."
 
      (defadvice flymake-goto-next-error (after flymake-cursor-display-message-1 activate compile)
        "Display the error in the mini-buffer rather than having to mouse over it"
-       (flymake-cursor-show-errors-at-point-now))
+       (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
 
      (defadvice flymake-goto-prev-error (after flymake-cursor-display-message-2 activate compile)
        "Display the error in the mini-buffer rather than having to mouse over it"
-       (flymake-cursor-show-errors-at-point-now))
+       (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
 
      (add-hook 'flymake-mode-hook '(lambda ()
        "Add functionality to the post command hook so that if the
@@ -149,7 +170,7 @@ cursor is sitting on a flymake error the error information is
 displayed in the minibuffer (rather than having to mouse over
 it)"
        (if flymake-mode
-         (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t)
-         (remove-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon t))))))
+         (flymake-cursor-mode 1)
+         (flymake-cursor-mode 0))))))
 
 (provide 'flymake-cursor)

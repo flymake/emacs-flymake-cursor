@@ -12,6 +12,7 @@ It adds the following features:
  * Customizable number of errors to display in the minibuffer.
  * Does not overwrite the minibuffer if it's currently in use for user input.
  * Turns off when flymake-mode is turned off.
+ * Now operates as a minor-mode of its own so you can turn on and off directly.
  * Requires flymake, ensuring a clean byte-compile.
 
 INSTALLATION
