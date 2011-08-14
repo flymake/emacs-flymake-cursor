@@ -53,6 +53,10 @@
 
 (require 'flymake)
 
+(defgroup flymake-cursor nil
+  "Show flymake errors for current line in message area."
+   :group 'tools)
+
 (defcustom flymake-cursor-error-display-delay 0.9
   "Delay in seconds to wait before displaying flymake errors for the current line."
   :group 'flymake-cursor
