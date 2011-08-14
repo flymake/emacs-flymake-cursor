@@ -148,8 +148,6 @@ second, does the flymake error message (if any) get displayed."
 cursor is sitting on a flymake error the error information is
 displayed in the minibuffer (rather than having to mouse over
 it)"
-       (set (make-local-variable 'post-command-hook)
-            (cons 'flymake-cursor-show-errors-at-point-pretty-soon post-command-hook)))))
-
+       (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t))))
 
 (provide 'flymake-cursor)
