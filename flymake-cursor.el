@@ -65,7 +65,12 @@
 (defcustom flymake-cursor-number-of-errors-to-display 1
   "Number of flymake errors to display if there are more than one.
 
-If set to nil, all errors for the line will be displayed."
+If set to nil, all errors for the line will be displayed.
+
+If there are more errors than can be displayed in the minibuffer, the
+first ones will be scrolled off. You will probably want to set this
+variable to a value consistent with your `max-mini-window-height'
+setting."
   :group 'flymake-cursor
   :type '(choice integer (const nil)))
 
@@ -183,7 +188,11 @@ status of `flymake-mode'."
 (eval-after-load "flymake"
   '(progn
 
-     (defadvice flymake-goto-line (after flymake-cursor-display-message activate compile)
+     (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
+       "Display the error in the mini-buffer rather than having to mouse over it"
+       (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
+
+     (defadvice flymake-post-syntax-check (after flymake-cursor-display-message-after-syntax-check activate compile)
        "Display the error in the mini-buffer rather than having to mouse over it"
        (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
 
