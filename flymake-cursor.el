@@ -51,7 +51,7 @@
 ;; You can, of course, put that in an eval-after-load clause.
 ;;
 
-(require 'flymake)
+(eval-when-compile (require 'flymake))
 
 (defgroup flymake-cursor nil
   "Show flymake errors for current line in message area."
