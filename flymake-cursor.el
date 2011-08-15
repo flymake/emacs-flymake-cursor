@@ -180,11 +180,7 @@ status of `flymake-mode'."
 (eval-after-load "flymake"
   '(progn
 
-     (defadvice flymake-goto-next-error (after flymake-cursor-display-message-1 activate compile)
-       "Display the error in the mini-buffer rather than having to mouse over it"
-       (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
-
-     (defadvice flymake-goto-prev-error (after flymake-cursor-display-message-2 activate compile)
+     (defadvice flymake-goto-line (after flymake-cursor-display-message activate compile)
        "Display the error in the mini-buffer rather than having to mouse over it"
        (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
 
