@@ -106,6 +106,7 @@ the mode directly."
       (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t))
     ;; Turning the mode OFF.
     (t
+      (flymake-cursor-cancel-error-display-timer)
       (remove-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon t))))
 
 (defun flymake-cursor-get-errors-at-point ()
@@ -127,12 +128,6 @@ message to display, so there is one ;)"
         (t ;; could not compile error
          (format "compile error, problem on line %s" (flymake-ler-line error)))))
 
-(defun flymake-cursor-cancel-error-display-timer ()
-  "Cancels `flymake-cursor-error-display-timer'."
-  (when flymake-cursor-error-display-timer
-    (cancel-timer flymake-cursor-error-display-timer)
-    (setq flymake-cursor-error-display-timer nil)))
-
 (defun flymake-cursor-show-stored-errors-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
@@ -153,6 +148,12 @@ the error message in the minibuffer."
   (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
   (when flymake-cursor-errors-at-point
     (flymake-cursor-show-stored-errors-now)))
+
+(defun flymake-cursor-cancel-error-display-timer ()
+  "Cancels `flymake-cursor-error-display-timer'."
+  (when flymake-cursor-error-display-timer
+    (cancel-timer flymake-cursor-error-display-timer)
+    (setq flymake-cursor-error-display-timer nil)))
 
 (defun flymake-cursor-show-errors-at-point-pretty-soon ()
   "If the cursor is sitting on a flymake error, grab the error,
