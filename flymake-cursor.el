@@ -127,12 +127,18 @@ message to display, so there is one ;)"
         (t ;; could not compile error
          (format "compile error, problem on line %s" (flymake-ler-line error)))))
 
+(defun flymake-cursor-cancel-error-display-timer ()
+  "Cancels `flymake-cursor-error-display-timer'."
+  (when flymake-cursor-error-display-timer
+    (cancel-timer flymake-cursor-error-display-timer)
+    (setq flymake-cursor-error-display-timer nil)))
+
 (defun flymake-cursor-show-stored-errors-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
   (when (and flymake-cursor-mode
              flymake-cursor-errors-at-point)
-    (setq flymake-cursor-error-display-timer nil)
+    (flymake-cursor-cancel-error-display-timer)
     ;;  Don't trash the minibuffer while they're being asked a question.
     (if (or (active-minibuffer-window)
             cursor-in-echo-area)
@@ -143,9 +149,7 @@ message to display, so there is one ;)"
   "If the cursor is sitting on a flymake error, display
 the error message in the minibuffer."
   (interactive)
-  (when flymake-cursor-error-display-timer
-    (cancel-timer flymake-cursor-error-display-timer)
-    (setq flymake-cursor-error-display-timer nil))
+  (flymake-cursor-cancel-error-display-timer)
   (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
   (when flymake-cursor-errors-at-point
     (flymake-cursor-show-stored-errors-now)))
@@ -162,13 +166,11 @@ This allows a post-command-hook to NOT cause the minibuffer to be
 updated 10,000 times as a user scrolls through a buffer
 quickly. Only when the user pauses on a line for more than a
 second, does the flymake error message (if any) get displayed."
-  (when flymake-cursor-error-display-timer
-    (cancel-timer flymake-cursor-error-display-timer))
+  (flymake-cursor-cancel-error-display-timer)
   (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
-  (if flymake-cursor-errors-at-point
+  (when flymake-cursor-errors-at-point
     (setq flymake-cursor-error-display-timer
-      (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-errors-now))
-    (setq flymake-cursor-error-display-timer nil)))
+      (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-errors-now))))
 
 (defun flymake-cursor-follow-flymake-mode ()
   "Hook function to make `flymake-cursor-mode` follow the on/off
