@@ -149,10 +149,11 @@ message to display, so there is one ;)"
   "If the cursor is sitting on a flymake error, display
 the error message in the minibuffer."
   (interactive)
-  (flymake-cursor-cancel-error-display-timer)
-  (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
-  (when flymake-cursor-errors-at-point
-    (flymake-cursor-show-stored-errors-now)))
+  (when flymake-cursor-mode
+    (flymake-cursor-cancel-error-display-timer)
+    (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
+    (when flymake-cursor-errors-at-point
+      (flymake-cursor-show-stored-errors-now))))
 
 (defun flymake-cursor-cancel-error-display-timer ()
   "Cancels `flymake-cursor-error-display-timer'."
@@ -187,15 +188,16 @@ status of `flymake-mode'."
 
 (eval-after-load "flymake"
   '(progn
-
-     (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
-       "Display the error in the mini-buffer rather than having to mouse over it"
-       (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
-
-     (defadvice flymake-post-syntax-check (after flymake-cursor-display-message-after-syntax-check activate compile)
-       "Display the error in the mini-buffer rather than having to mouse over it"
-       (when flymake-cursor-mode (flymake-cursor-show-errors-at-point-now)))
-
-     (add-hook 'flymake-mode-hook 'flymake-cursor-follow-flymake-mode)))
+    (if (boundp 'flymake-goto-line-hook)
+      (add-hook 'flymake-goto-line-hook 'flymake-cursor-show-errors-at-point-now)
+      (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
+        "Display the error in the mini-buffer rather than having to mouse over it"
+         (flymake-cursor-show-errors-at-point-now)))
+    (if (boundp 'flymake-after-syntax-check-hook)
+      (add-hook 'flymake-after-syntax-check-hook 'flymake-cursor-show-errors-at-point-now)
+      (defadvice flymake-post-syntax-check (after flymake-cursor-display-message-after-syntax-check activate compile)
+        "Display the error in the mini-buffer rather than having to mouse over it"
+        (flymake-cursor-show-errors-at-point-now)))
+    (add-hook 'flymake-mode-hook 'flymake-cursor-follow-flymake-mode)))
 
 (provide 'flymake-cursor)
