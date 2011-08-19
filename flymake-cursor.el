@@ -133,17 +133,21 @@ message to display, so there is one ;)"
         (t ;; could not compile error
          (format "compile error, problem on line %s" (flymake-ler-line error)))))
 
+(defun flymake-cursor-safe-to-display ()
+  "Returns t if Flymake Cursor is safe to display to the minibuffer or nil if
+something else is using the message area."
+  ;;  Don't trash the minibuffer while they're being asked a question.
+  (not (or (active-minibuffer-window) cursor-in-echo-area)))
+
 (defun flymake-cursor-show-stored-errors-now ()
   "Displays the stored error in the minibuffer."
   (interactive)
-  (when (and flymake-cursor-mode
-             flymake-cursor-errors-at-point)
+  (when flymake-cursor-mode
     (flymake-cursor-cancel-error-display-timer)
-    ;;  Don't trash the minibuffer while they're being asked a question.
-    (if (or (active-minibuffer-window)
-            cursor-in-echo-area)
-      (flymake-cursor-show-errors-at-point-pretty-soon)
-      (message "%s" (mapconcat 'flymake-cursor-maybe-fixup-message flymake-cursor-errors-at-point "\n")))))
+    (when flymake-cursor-errors-at-point
+      (if (flymake-cursor-safe-to-display)
+        (message "%s" (mapconcat 'flymake-cursor-maybe-fixup-message flymake-cursor-errors-at-point "\n"))
+        (flymake-cursor-show-errors-at-point-pretty-soon)))))
 
 (defun flymake-cursor-show-errors-at-point-now ()
   "If the cursor is sitting on a flymake error, display
@@ -152,8 +156,14 @@ the error message in the minibuffer."
   (when flymake-cursor-mode
     (flymake-cursor-cancel-error-display-timer)
     (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
-    (when flymake-cursor-errors-at-point
-      (flymake-cursor-show-stored-errors-now))))
+    (if flymake-cursor-errors-at-point
+      (flymake-cursor-show-stored-errors-now)
+      ;; If something is demanding we display errors immediately, we do
+      ;; want to clear the message area to indicate there's no errors.
+      ;; Otherwise flymake-cursor-after-syntax-check will just keep the
+      ;; old error for the current line if it has been corrected.
+      (when (flymake-cursor-safe-to-display)
+        (message nil)))))
 
 (defun flymake-cursor-cancel-error-display-timer ()
   "Cancels `flymake-cursor-error-display-timer'."
