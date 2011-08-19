@@ -196,18 +196,23 @@ status of `flymake-mode'."
     (when flymake-cursor-auto-enable (flymake-cursor-mode 1))
     (flymake-cursor-mode 0)))
 
+(defun flymake-cursor-after-syntax-check ()
+  "Run from `flymake-after-syntax-check-hook' to update our errors."
+  (when (eq (current-buffer) (window-buffer))
+    (flymake-cursor-show-errors-at-point-now)))
+
 (eval-after-load "flymake"
   '(progn
     (if (boundp 'flymake-goto-line-hook)
       (add-hook 'flymake-goto-line-hook 'flymake-cursor-show-errors-at-point-now)
       (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
         "Display the error in the mini-buffer rather than having to mouse over it"
-         (flymake-cursor-show-errors-at-point-now)))
+         (flymake-cursor-after-syntax-check)))
     (if (boundp 'flymake-after-syntax-check-hook)
       (add-hook 'flymake-after-syntax-check-hook 'flymake-cursor-show-errors-at-point-now)
       (defadvice flymake-post-syntax-check (after flymake-cursor-display-message-after-syntax-check activate compile)
         "Display the error in the mini-buffer rather than having to mouse over it"
-        (flymake-cursor-show-errors-at-point-now)))
+        (flymake-cursor-after-syntax-check)))
     (add-hook 'flymake-mode-hook 'flymake-cursor-follow-flymake-mode)))
 
 (provide 'flymake-cursor)
