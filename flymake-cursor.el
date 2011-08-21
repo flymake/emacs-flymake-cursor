@@ -203,8 +203,8 @@ status of `flymake-mode'."
 
 (eval-after-load "flymake"
   '(progn
-    (if (boundp 'flymake-goto-line-hook)
-      (add-hook 'flymake-goto-line-hook 'flymake-cursor-show-errors-at-point-now)
+    (if (boundp 'flymake-goto-error-hook)
+      (add-hook 'flymake-goto-error-hook 'flymake-cursor-show-errors-at-point-now)
       (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
         "Display the error in the mini-buffer rather than having to mouse over it"
          (flymake-cursor-show-errors-at-point-now)))
