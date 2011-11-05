@@ -1,8 +1,10 @@
 ;;; flymake-cursor.el --- displays flymake error msg in minibuffer after delay
-;;
-;; Author     : ??
+
+;; Author     : Unknown Original Author
+;;              Dino Chiesa <dpchiesa@hotmail.com>
+;;              Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
+;; Maintainer : Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
 ;; origin     : http://paste.lisp.org/display/60617,1/raw
-;; Maintainer : Dino Chiesa <dpchiesa@hotmail.com>
 ;; Created    : May 2011
 ;; Modified   : May 2011
 ;; Version    : 0.2.0
@@ -11,9 +13,9 @@
 ;; Last-saved : <2011-May-09 16:35:59>
 ;; License: None.  This code is in the Public Domain.
 ;; Package-Requires: ((flymake "0.3"))
-;;
+
 ;;; Commentary:
-;;
+
 ;; Additional functionality that makes flymake error messages appear
 ;; in the minibuffer when point is on a line containing a flymake
 ;; error. This saves having to mouse over the error, which is a
@@ -48,7 +50,8 @@
 ;;    (require 'flymake-cursor)
 ;;
 ;; You can, of course, put that in an eval-after-load clause.
-;;
+
+;;; Code:
 
 (eval-when-compile (require 'flymake))
 
