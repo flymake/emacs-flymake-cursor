@@ -1,0 +1,3 @@
+* flymake-cursor.el 0.2.1 (candidate)
+  * Add Changes file.
+  * Use butlast for error truncation rather than messing with car/cdr directly.

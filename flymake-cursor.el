@@ -116,11 +116,9 @@ the mode directly."
 (defun flymake-cursor-get-errors-at-point ()
   "Gets the first `flymake-cursor-number-of-errors-to-display` flymake errors on the line at point."
   (let ((line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info (line-number-at-pos)))))
-    (when (and flymake-cursor-number-of-errors-to-display
-               (> (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
-      (setq line-err-info-list (copy-sequence line-err-info-list))
-      (setcdr (nthcdr (- flymake-cursor-number-of-errors-to-display 1) line-err-info-list) nil))
-    line-err-info-list))
+    (if flymake-cursor-number-of-errors-to-display
+      (butlast line-err-info-list (- (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
+      line-err-info-list)))
 
 (defun flymake-cursor-maybe-fixup-message (error)
   "pyflake is flakey if it has compile problems, this adjusts the
