@@ -1,4 +1,4 @@
-;;; flymake-cursor.el --- displays flymake error msg in minibuffer after delay
+;;; flymake-cursor.el --- Show flymake messages in the minibuffer after delay
 ;;
 ;; Copyright (C) 2011-2012  Free Software Foundation, Inc.
 ;;
@@ -8,7 +8,7 @@
 ;; Maintainer: Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
 ;; URL: https://github.com/illusori/emacs-flymake-cursor
 ;; origin: http://paste.lisp.org/display/60617,1/raw
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Keywords: languages mode flymake
 ;; License: Gnu Public License
 ;; Package-Requires: ((flymake "0.3"))

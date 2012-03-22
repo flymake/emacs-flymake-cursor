@@ -1,3 +1,6 @@
+* flymake-cursor.el 1.0.2 (2012-03-22-17:55)
+  * Fix the package description to the nicer Marmalade version too.
+
 * flymake-cursor.el 1.0.1 (2012-03-22-17:48)
   * Add Changes file.
   * Use butlast for error truncation rather than messing with car/cdr directly.
