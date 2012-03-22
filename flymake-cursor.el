@@ -1,21 +1,32 @@
 ;;; flymake-cursor.el --- displays flymake error msg in minibuffer after delay
-
-;; Author     : Unknown Original Author
-;;              Dino Chiesa <dpchiesa@hotmail.com>
-;;              Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
-;; Maintainer : Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
-;; origin     : http://paste.lisp.org/display/60617,1/raw
-;; Created    : May 2011
-;; Modified   : May 2011
-;; Version    : 0.2.0
-;; Keywords   : languages mode flymake
-;; X-URL      : http://www.emacswiki.org/emacs/flymake-cursor.el
-;; Last-saved : <2011-May-09 16:35:59>
-;; License: None.  This code is in the Public Domain.
+;;
+;; Copyright (C) 2011-2012  Free Software Foundation, Inc.
+;;
+;; Author: Unknown Original Author
+;;         Dino Chiesa <dpchiesa@hotmail.com>
+;;         Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
+;; Maintainer: Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
+;; URL: https://github.com/illusori/emacs-flymake-cursor
+;; origin: http://paste.lisp.org/display/60617,1/raw
+;; Version: 1.0.1
+;; Keywords: languages mode flymake
+;; License: Gnu Public License
 ;; Package-Requires: ((flymake "0.3"))
-
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;;
 ;;; Commentary:
-
+;;
 ;; Additional functionality that makes flymake error messages appear
 ;; in the minibuffer when point is on a line containing a flymake
 ;; error. This saves having to mouse over the error, which is a
@@ -44,11 +55,8 @@
 ;;
 ;; I've also updated the names of the defuns. They all start with flyc now.
 ;;
-;; To use this, include this line in your .emacs:
-;;
-;;    ;; enhancements for displaying flymake errors
-;;    (require 'flymake-cursor)
-;;
+;;; Usage:
+;; (require 'flymake-cursor)
 ;; You can, of course, put that in an eval-after-load clause.
 
 ;;; Code:
@@ -123,7 +131,7 @@ the mode directly."
       (butlast line-err-info-list (- (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
       line-err-info-list)))
 
-(defun flymake-cursor-maybe-fixup-message (error)
+(defun flymake-cursor-pyflake-determine-message (error)
   "pyflake is flakey if it has compile problems, this adjusts the
 message to display, so there is one ;)"
   (cond ((not (or (eq major-mode 'Python) (eq major-mode 'python-mode) t)))
@@ -146,7 +154,7 @@ something else is using the message area."
     (flymake-cursor-cancel-error-display-timer)
     (when flymake-cursor-errors-at-point
       (if (flymake-cursor-safe-to-display)
-        (message "%s" (mapconcat 'flymake-cursor-maybe-fixup-message flymake-cursor-errors-at-point "\n"))
+        (message "%s" (mapconcat 'flymake-cursor-pyflake-determine-message flymake-cursor-errors-at-point "\n"))
         (flymake-cursor-show-errors-at-point-pretty-soon)))))
 
 (defun flymake-cursor-show-errors-at-point-now ()
