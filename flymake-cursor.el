@@ -145,7 +145,7 @@ message to display, so there is one ;)"
   "Returns t if Flymake Cursor is safe to display to the minibuffer or nil if
 something else is using the message area."
   ;;  Don't trash the minibuffer while they're being asked a question.
-  (not (or (active-minibuffer-window) cursor-in-echo-area)))
+  (not (or (active-minibuffer-window) (current-message) cursor-in-echo-area)))
 
 (defun flymake-cursor-show-stored-errors-now ()
   "Displays the stored error in the minibuffer."
