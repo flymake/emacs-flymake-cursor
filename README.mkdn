@@ -1,6 +1,8 @@
 flymake-cursor.el
 =================
 
+NOTE: This project is no longer actively maintained, please consider https://github.com/ryoung786/emacs-flymake-cursor or https://github.com/flycheck/flycheck instead.
+
 This project is a plugin for Emacs to work in conjunction with flymake.el
 it displays any flymake error for the current line on the minibuffer.
 
