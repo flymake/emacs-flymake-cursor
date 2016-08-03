@@ -1,7 +1,7 @@
 flymake-cursor.el
 =================
 
-NOTE: This project is no longer actively maintained, please consider https://github.com/ryoung786/emacs-flymake-cursor or https://github.com/flycheck/flycheck instead.
+NOTE: This project is no longer actively maintained, please consider https://github.com/flycheck/flycheck instead.
 
 This project is a plugin for Emacs to work in conjunction with flymake.el
 it displays any flymake error for the current line on the minibuffer.
@@ -21,6 +21,13 @@ It adds the following features:
 INSTALLATION
 ------------
 
+####Package Manager
+This package is available on [MELPA](https://melpa.org) and [MELPA Stable](https://stable.melpa.org), so you can 
+```
+M-x package-install flymake-cursor
+```
+
+####Self installation
 Place `flymake-cursor.el` within your Emacs `load-path` and the following to your
 `.emacs` file or your `init.el`:
 
