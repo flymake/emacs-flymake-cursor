@@ -1,12 +1,14 @@
 flymake-cursor.el
 =================
 
-NOTE: This project is no longer actively maintained, please consider https://github.com/flycheck/flycheck instead.
+This is a fork of https://github.com/flymake/emacs-flymake-cursor
+which is fork of https://www.emacswiki.org/emacs/flymake-cursor.el.
 
-This project is a plugin for Emacs to work in conjunction with flymake.el
-it displays any flymake error for the current line on the minibuffer.
+It also works with latest flymake (Emacs >= 26) unlike upstream
 
-The project is a fork of http://www.emacswiki.org/emacs/flymake-cursor.el
+This project is a plugin for Emacs to work in conjunction with
+flymake.el it displays any flymake error for the current line on the
+minibuffer.
 
 It adds the following features:
 
@@ -20,14 +22,17 @@ It adds the following features:
 
 INSTALLATION
 ------------
+Clone repo
 
-####Package Manager
-This package is available on [MELPA](https://melpa.org) and [MELPA Stable](https://stable.melpa.org), so you can 
-```
-M-x package-install flymake-cursor
+#### use-package
+```lisp
+(use-package flymake-cursor
+  :load-path "~/.emacs.d/lisp/emacs-flymake-cursor" ;; cloned repo path
+  :config
+  (flymake-cursor-mode))
 ```
 
-####Self installation
+#### manual
 Place `flymake-cursor.el` within your Emacs `load-path` and the following to your
 `.emacs` file or your `init.el`:
 
