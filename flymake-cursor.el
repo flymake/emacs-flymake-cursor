@@ -134,7 +134,7 @@ the mode directly."
 (defun flymake-cursor-get-errors ()
   (cond ((boundp 'flymake-err-info)  ; emacs < 26
          (let ((lineno (line-number-at-pos)))
-           (err-info (car (flymake-find-err-info flymake-err-info lineno)))))
+           (car (flymake-find-err-info flymake-err-info lineno))))
         ((and (fboundp 'flymake-diagnostic-text)
               (fboundp 'flymake-diagnostics))  ; emacs >= 26
          (flymake-diagnostics (point)))))
@@ -143,12 +143,11 @@ the mode directly."
   "pyflake is flakey if it has compile problems, this adjusts the
 message to display, so there is one ;)"
   (cond ((not (or (eq major-mode 'Python) (eq major-mode 'python-mode) t)))
-        ((boundp 'flymake-ler-file)
-         (let ((msg (flymake-ler-file error)))
+        ((fboundp 'flymake-diagnostic-text)
+         (let ((msg (flymake-diagnostic-text error)))
            (if (null msg) msg (format "compile error, problem on line %s" msg))))
         (t
-         (let ((msg (flymake-diagnostic-text error)))
-           (if (null msg) msg (format "compile error, problem on line %s" msg))))))
+         (flymake-ler-text error))))
 
 (defun flymake-cursor-safe-to-display ()
   "Returns t if Flymake Cursor is safe to display to the minibuffer or nil if
