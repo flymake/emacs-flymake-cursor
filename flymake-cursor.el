@@ -144,8 +144,7 @@ the mode directly."
 message to display, so there is one ;)"
   (cond ((not (or (eq major-mode 'Python) (eq major-mode 'python-mode) t)))
         ((fboundp 'flymake-diagnostic-text)
-         (let ((msg (flymake-diagnostic-text error)))
-           (if (null msg) msg (format "compile error, problem on line %s" msg))))
+         (let ((msg (flymake-diagnostic-text error))) msg))
         (t
          (flymake-ler-text error))))
 
