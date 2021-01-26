@@ -13,19 +13,20 @@
 ;; Keywords: languages mode flymake
 ;; License: Gnu Public License
 ;; Package-Requires: ((flymake "0.3"))
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
 ;; (at your option) any later version.
-;;
+
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;;
+
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-;;
+
 ;;; Commentary:
 ;;
 ;; Additional functionality that makes flymake error messages appear
@@ -66,7 +67,7 @@
 
 (defgroup flymake-cursor nil
   "Show flymake errors for current line in message area."
-   :group 'tools)
+  :group 'tools)
 
 (defcustom flymake-cursor-error-display-delay 0.9
   "Delay in seconds to wait before displaying flymake errors for the current line."
@@ -117,19 +118,19 @@ the mode directly."
   :group 'flymake-cursor
   (cond
 
-    ;; Turning the mode ON.
-    (flymake-cursor-mode
-      (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t))
-    ;; Turning the mode OFF.
-    (t
-      (flymake-cursor-cancel-error-display-timer)
-      (remove-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon t))))
+   ;; Turning the mode ON.
+   (flymake-cursor-mode
+    (add-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon nil t))
+   ;; Turning the mode OFF.
+   (t
+    (flymake-cursor-cancel-error-display-timer)
+    (remove-hook 'post-command-hook 'flymake-cursor-show-errors-at-point-pretty-soon t))))
 
 (defun flymake-cursor-get-errors-at-point ()
   "Gets the first `flymake-cursor-number-of-errors-to-display` flymake errors on the line at point."
   (let ((line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info (line-number-at-pos)))))
     (if flymake-cursor-number-of-errors-to-display
-      (butlast line-err-info-list (- (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
+        (butlast line-err-info-list (- (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
       line-err-info-list)))
 
 (defun flymake-cursor-pyflake-determine-message (error)
@@ -155,7 +156,7 @@ something else is using the message area."
     (flymake-cursor-cancel-error-display-timer)
     (when flymake-cursor-errors-at-point
       (if (flymake-cursor-safe-to-display)
-        (message "%s" (mapconcat 'flymake-cursor-pyflake-determine-message flymake-cursor-errors-at-point "\n"))
+          (message "%s" (mapconcat 'flymake-cursor-pyflake-determine-message flymake-cursor-errors-at-point "\n"))
         (flymake-cursor-show-errors-at-point-pretty-soon)))))
 
 (defun flymake-cursor-show-errors-at-point-now ()
@@ -166,7 +167,7 @@ the error message in the minibuffer."
     (flymake-cursor-cancel-error-display-timer)
     (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
     (if flymake-cursor-errors-at-point
-      (flymake-cursor-show-stored-errors-now)
+        (flymake-cursor-show-stored-errors-now)
       ;; If something is demanding we display errors immediately, we do
       ;; want to clear the message area to indicate there's no errors.
       ;; Otherwise flymake-cursor-after-syntax-check will just keep the
@@ -196,13 +197,13 @@ second, does the flymake error message (if any) get displayed."
   (setq flymake-cursor-errors-at-point (flymake-cursor-get-errors-at-point))
   (when flymake-cursor-errors-at-point
     (setq flymake-cursor-error-display-timer
-      (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-errors-now))))
+          (run-at-time flymake-cursor-error-display-delay nil 'flymake-cursor-show-stored-errors-now))))
 
 (defun flymake-cursor-follow-flymake-mode ()
   "Hook function to make `flymake-cursor-mode` follow the on/off
 status of `flymake-mode'."
   (if flymake-mode
-    (when flymake-cursor-auto-enable (flymake-cursor-mode 1))
+      (when flymake-cursor-auto-enable (flymake-cursor-mode 1))
     (flymake-cursor-mode 0)))
 
 (defun flymake-cursor-after-syntax-check ()
@@ -212,17 +213,17 @@ status of `flymake-mode'."
 
 (eval-after-load "flymake"
   '(progn
-    (if (boundp 'flymake-goto-error-hook)
-      (add-hook 'flymake-goto-error-hook 'flymake-cursor-show-errors-at-point-now)
-      (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
-        "Display the error in the mini-buffer rather than having to mouse over it"
+     (if (boundp 'flymake-goto-error-hook)
+         (add-hook 'flymake-goto-error-hook 'flymake-cursor-show-errors-at-point-now)
+       (defadvice flymake-goto-line (after flymake-cursor-display-message-after-move-to-error activate compile)
+         "Display the error in the mini-buffer rather than having to mouse over it"
          (flymake-cursor-show-errors-at-point-now)))
-    (if (boundp 'flymake-after-syntax-check-hook)
-      (add-hook 'flymake-after-syntax-check-hook 'flymake-cursor-after-syntax-check)
-      (defadvice flymake-post-syntax-check (after flymake-cursor-display-message-after-syntax-check activate compile)
-        "Display the error in the mini-buffer rather than having to mouse over it"
-        (flymake-cursor-after-syntax-check)))
-    (add-hook 'flymake-mode-hook 'flymake-cursor-follow-flymake-mode)))
+     (if (boundp 'flymake-after-syntax-check-hook)
+         (add-hook 'flymake-after-syntax-check-hook 'flymake-cursor-after-syntax-check)
+       (defadvice flymake-post-syntax-check (after flymake-cursor-display-message-after-syntax-check activate compile)
+         "Display the error in the mini-buffer rather than having to mouse over it"
+         (flymake-cursor-after-syntax-check)))
+     (add-hook 'flymake-mode-hook 'flymake-cursor-follow-flymake-mode)))
 
 (provide 'flymake-cursor)
 ;;; flymake-cursor.el ends here
