@@ -6,6 +6,7 @@
 ;;         Dino Chiesa <dpchiesa@hotmail.com>
 ;;         Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
 ;; Maintainer: Sam Graham <libflymake-emacs BLAHBLAH illusori.co.uk>
+;;             Jen-Chieh Shen <jcs090218@gmail.com>
 ;; URL: https://github.com/flymake/emacs-flymake-cursor
 ;; origin: http://paste.lisp.org/display/60617,1/raw
 ;; Version: 1.0.2
