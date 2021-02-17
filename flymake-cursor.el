@@ -128,20 +128,29 @@ the mode directly."
 
 (defun flymake-cursor-get-errors-at-point ()
   "Gets the first `flymake-cursor-number-of-errors-to-display` flymake errors on the line at point."
-  (let ((line-err-info-list (nth 0 (flymake-find-err-info flymake-err-info (line-number-at-pos)))))
+  (let ((line-err-info-list (flymake-cursor-get-errors)))
     (if flymake-cursor-number-of-errors-to-display
         (butlast line-err-info-list (- (length line-err-info-list) flymake-cursor-number-of-errors-to-display))
       line-err-info-list)))
+
+(defun flymake-cursor-get-errors ()
+  (cond ((boundp 'flymake-err-info)  ; emacs < 26
+         (let ((lineno (line-number-at-pos)))
+           (err-info (car (flymake-find-err-info flymake-err-info lineno)))))
+        ((and (fboundp 'flymake-diagnostic-text)
+              (fboundp 'flymake-diagnostics))  ; emacs >= 26
+         (flymake-diagnostics (point)))))
 
 (defun flymake-cursor-pyflake-determine-message (error)
   "pyflake is flakey if it has compile problems, this adjusts the
 message to display, so there is one ;)"
   (cond ((not (or (eq major-mode 'Python) (eq major-mode 'python-mode) t)))
-        ((null (flymake-ler-file error))
-         ;; normal message do your thing
-         (flymake-ler-text error))
-        (t ;; could not compile error
-         (format "compile error, problem on line %s" (flymake-ler-line error)))))
+        ((boundp 'flymake-ler-file)
+         (let ((msg (flymake-ler-file error)))
+           (if (null msg) msg (format "compile error, problem on line %s" msg))))
+        (t
+         (let ((msg (flymake-diagnostic-text error)))
+           (if (null msg) msg (format "compile error, problem on line %s" msg))))))
 
 (defun flymake-cursor-safe-to-display ()
   "Returns t if Flymake Cursor is safe to display to the minibuffer or nil if
