@@ -5,8 +5,6 @@
 flymake-cursor.el
 =================
 
-[![CI](https://github.com/flymake/emacs-flymake-cursor/actions/workflows/test.yml/badge.svg)](https://github.com/flymake/emacs-flymake-cursor/actions/workflows/test.yml)
-
 NOTE: This project is no longer actively maintained, please consider https://github.com/flycheck/flycheck instead.
 
 This project is a plugin for Emacs to work in conjunction with flymake.el
