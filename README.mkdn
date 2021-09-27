@@ -1,8 +1,11 @@
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![MELPA](https://melpa.org/packages/flymake-cursor-badge.svg)](https://melpa.org/#/flymake-cursor)
+[![MELPA Stable](https://stable.melpa.org/packages/flymake-cursor-badge.svg)](https://stable.melpa.org/#/flymake-cursor)
+
 flymake-cursor.el
 =================
 
-[![MELPA](https://melpa.org/packages/flymake-cursor-badge.svg)](https://melpa.org/#/flymake-cursor)
-[![MELPA Stable](https://stable.melpa.org/packages/flymake-cursor-badge.svg)](https://stable.melpa.org/#/flymake-cursor)
+[![CI](https://github.com/flymake/emacs-flymake-cursor/actions/workflows/test.yml/badge.svg)](https://github.com/flymake/emacs-flymake-cursor/actions/workflows/test.yml)
 
 NOTE: This project is no longer actively maintained, please consider https://github.com/flycheck/flycheck instead.
 
