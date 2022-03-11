@@ -7,6 +7,8 @@ flymake-cursor.el
 
 NOTE: This project is no longer actively maintained, please consider https://github.com/flycheck/flycheck instead.
 
+[![CI](https://github.com/flymake/emacs-flymake-cursor/actions/workflows/test.yml/badge.svg)](https://github.com/flymake/emacs-flymake-cursor/actions/workflows/test.yml)
+
 This project is a plugin for Emacs to work in conjunction with flymake.el
 it displays any flymake error for the current line on the minibuffer.
 
