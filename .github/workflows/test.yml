@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+    test-unix:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+                emacs-version:
+                    - 27.2
+                    - snapshot
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: "3.6"
+                  architecture: "x64"
+
+            - uses: purcell/setup-emacs@master
+              with:
+                  version: ${{ matrix.emacs-version }}
+
+            - uses: cask/setup-cask@master
+              with:
+                  version: 'snapshot'
+
+            - name: Run tests
+              run:
+                make ci
+
+    test-windows:
+        runs-on: windows-latest
+        strategy:
+            matrix:
+                emacs-version:
+                    - 27.2
+                    - snapshot
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: actions/setup-python@v2
+              with:
+                  python-version: "3.6"
+                  architecture: "x64"
+
+            - uses: jcs090218/setup-emacs-windows@master
+              with:
+                  version: ${{ matrix.emacs-version }}
+
+            - uses: cask/setup-cask@master
+              with:
+                  version: 'snapshot'
+
+            - name: Run tests
+              run:
+                make ci
