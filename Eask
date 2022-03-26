@@ -1,4 +1,7 @@
+(source "gnu")
 (source "melpa")
+
+(package "flymake-cursor" "1.0.2" "Show flymake messages in the minibuffer after delay")
 
 (package-file "flymake-cursor.el")
 
