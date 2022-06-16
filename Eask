@@ -2,6 +2,9 @@
          "1.0.2"
          "Show flymake messages in the minibuffer after delay")
 
+(website-url "https://github.com/flymake/emacs-flymake-cursor")
+(keywords "languages" "mode" "flymake")
+
 (package-file "flymake-cursor.el")
 
 (source "gnu")
